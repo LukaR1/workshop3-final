@@ -1,12 +1,14 @@
 import React, {useEffect, useState} from "react";
 import {Button, ButtonToolbar, Form, Modal, Table} from "react-bootstrap";
 import api from "../utils/api";
+import ModalHeader from "react-bootstrap/ModalHeader";
 
 
 
 export default function Student(props) {
-
+    // const [id, setId] = useState() /*აიდის წამოღება*/
     const [showModal, setShowModal] = useState(false);
+    const [updateModal, setUpdateModal] = useState(false);
     const [student, setStudent] = useState([])
     const [formValue, setFormValue] = useState({
         firstname: "",
@@ -28,18 +30,20 @@ export default function Student(props) {
 
     const addStudent = async (e) => {
         e.preventDefault();
-        await api.post('/student', {firstname: formValue.firstname, lastname: formValue.lastname, personal_no: formValue.personal_no,email: formValue.email, birth_date: formValue.birth_date});
+        await api.post('/student', {firstname: formValue.firstname, lastname: formValue.lastname, personalNo: formValue.personal_no,email: formValue.email, birthDate: formValue.birth_date});
         await getStudent();
     }
-
+    const deleteStudent = async (e) =>{
+        await api.delete(`/student`) /*აიდით წაშლა*/
+    }
 
 
 
     return (
         <div>
-            <Table striped bordered hover>
+            <Table striped bordered hover onClick={() => setUpdateModal(true)}>
                 <thead>
-                <tr className={'text-center'}>
+                <tr className={'text-center'} >
                     <th>ID</th>
                     <th>FIRSTNAME</th>
                     <th>LASTNAME</th>
@@ -55,14 +59,24 @@ export default function Student(props) {
                             <td>{student.id}</td>
                             <td>{student.firstname}</td>
                             <td>{student.lastname}</td>
-                            <td>{student.personal_no}</td>
+                            <td>{student.personalNo}</td>
                             <td>{student.email}</td>
-                            <td>{student.birth_date}</td>
+                            <td>{student.birthDate}</td>
                         </tr>
                     )}
                 </tbody>
             </Table>
 
+            <Modal show={updateModal} onHide={() => setShowModal(false)}>
+                <Modal.Header>
+                    <Modal.Title>Change Or Delete Data</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form>
+
+                    </Form>
+                </Modal.Body>
+            </Modal>
 
             <Button className={"m-2"} variant="primary" onClick={() => setShowModal(true)}>Add</Button>
 
@@ -110,7 +124,7 @@ export default function Student(props) {
                         <Form.Group className={"mt-3"}>
                             <Form.Label>BIRTH DATE</Form.Label>
                             <Form.Control
-                                placeholder="Enter Birth Date"
+                                placeholder="Enter Birth Date (yyyy-mm-dd)"
                                 value={formValue.birth_date}
                                 onChange={event => setFormValue({...formValue, birth_date: event.target.value})}
                             />
