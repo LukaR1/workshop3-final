@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {Button, ButtonToolbar, Form, Modal, Table} from "react-bootstrap";
 import api from "../utils/api";
-import ModalHeader from "react-bootstrap/ModalHeader";
+import axios from "axios";
 
 
 
@@ -18,6 +18,8 @@ export default function Student(props) {
         birth_date: ""
     });
 
+
+
     const getStudent = async () => {
         const res = await api.get('/student')
         setStudent(res.data)
@@ -33,10 +35,9 @@ export default function Student(props) {
         await api.post('/student', {firstname: formValue.firstname, lastname: formValue.lastname, personalNo: formValue.personal_no,email: formValue.email, birthDate: formValue.birth_date});
         await getStudent();
     }
-    const deleteStudent = async (e) =>{
-        await api.delete(`/student`) /*აიდით წაშლა*/
-    }
-
+    // const deleteStudent = async (e) =>{
+    //     await api.delete(`/student${student.id}`) /*აიდით წაშლა*/
+    // }
 
 
     return (
@@ -73,7 +74,9 @@ export default function Student(props) {
                 </Modal.Header>
                 <Modal.Body>
                     <Form>
-
+                        <button>
+                            delete
+                        </button>
                     </Form>
                 </Modal.Body>
             </Modal>
