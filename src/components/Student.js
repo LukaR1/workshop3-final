@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {Button, ButtonToolbar, Form, Modal, Table} from "react-bootstrap";
-import api from "../utils/api";
+// import api from "../utils/api";
 import axios from "axios";
 
 
@@ -9,6 +9,7 @@ export default function Student(props) {
     // const [id, setId] = useState() /*აიდის წამოღება*/
     const [showModal, setShowModal] = useState(false);
     const [updateModal, setUpdateModal] = useState(false);
+    const [deleteModal, setDeleteModal] = useState(false);
     const [student, setStudent] = useState([])
     const [formValue, setFormValue] = useState({
         firstname: "",
@@ -18,10 +19,8 @@ export default function Student(props) {
         birth_date: ""
     });
 
-
-
     const getStudent = async () => {
-        const res = await api.get('/student')
+        const res = await axios.get('/students')
         setStudent(res.data)
     }
 
@@ -32,28 +31,36 @@ export default function Student(props) {
 
     const addStudent = async (e) => {
         e.preventDefault();
-        await api.post('/student', {firstname: formValue.firstname, lastname: formValue.lastname, personalNo: formValue.personal_no,email: formValue.email, birthDate: formValue.birth_date});
+        await axios.post('/students', {firstname: formValue.firstname, lastname: formValue.lastname, personalNo: formValue.personal_no,email: formValue.email, birthDate: formValue.birth_date});
         await getStudent();
     }
-    // const deleteStudent = async (e) =>{
-    //     await api.delete(`/student${student.id}`) /*აიდით წაშლა*/
-    // }
+    const deleteStudent = async (id) =>{
+        await axios.delete(`/students/${id}`)
+        await getStudent();
+        /*აიდით წაშლა*/
+    }
 
 
     return (
+
         <div>
-            <Table striped bordered hover onClick={() => setUpdateModal(true)}>
+
+            <Table striped bordered hover >
+
                 <thead>
+
                 <tr className={'text-center'} >
-                    <th>ID</th>
-                    <th>FIRSTNAME</th>
-                    <th>LASTNAME</th>
-                    <th>PERSONAL NO</th>
-                    <th>EMAIL</th>
-                    <th>BIRTH DATE</th>
+
+                    <th >Id</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Personal No</th>
+                    <th>Email</th>
+                    <th>Birth Date</th>
                 </tr>
                 </thead>
-                <tbody>
+                <tbody style={{cursor:"pointer"}}>
+
                 {
                     student.map((student) =>
                         <tr key={student.id}>
@@ -62,27 +69,42 @@ export default function Student(props) {
                             <td>{student.lastname}</td>
                             <td>{student.personalNo}</td>
                             <td>{student.email}</td>
-                            <td>{student.birthDate}</td>
+                            <td>{(student.birthDate)?student.birthDate.slice(0,10):""}</td>
+                            <td>
+                                <Button className={"m-2"} variant="warning" onClick={() => setUpdateModal(true)}>Update</Button>
+                                <Modal show={updateModal} onHide={()=> setUpdateModal(false)}>
+                                    <Modal.Header closeButton>
+                                        <Modal.Title>Update Date</Modal.Title>
+                                    </Modal.Header>
+                                </Modal>
+                                <Button className={"m-2"} variant="danger" onClick={() => setDeleteModal(true) }>Delete</Button>
+                                <Modal show={deleteModal} onHide={()=> setDeleteModal(false)} >
+                                    <Modal.Header  closeButton >
+                                        <Modal.Title>Are you sure ?</Modal.Title>
+                                    </Modal.Header>
+                                    <Modal.Body>
+                                        <div style={{display: "flex", alignItems: "center", justifyContent: "center" }} >
+                                            <Button  style={{marginRight: 2.5}} onClick={()=>{setDeleteModal(false) ; deleteStudent(student.id).catch(console.error)}} >
+                                                Yes
+                                            </Button>
+
+                                            <Button  style={{marginLeft: 2.5}} onClick={()=> setDeleteModal(false)}>
+                                                No
+                                            </Button>
+                                        </div>
+                                    </Modal.Body>
+                                </Modal>
+                            </td>
                         </tr>
+
                     )}
+
                 </tbody>
             </Table>
 
-            <Modal show={updateModal} onHide={() => setShowModal(false)}>
-                <Modal.Header>
-                    <Modal.Title>Change Or Delete Data</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form>
-                        <button>
-                            delete
-                        </button>
-                    </Form>
-                </Modal.Body>
-            </Modal>
-
             <Button className={"m-2"} variant="primary" onClick={() => setShowModal(true)}>Add</Button>
 
+            {/*<Button className={"m-2"} variant="primary">Logout</Button>*/}
 
             <Modal show={showModal} onHide={() => setShowModal(false)}>
                 <Modal.Header closeButton>
