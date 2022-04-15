@@ -6,7 +6,6 @@ import axios from "axios";
 
 
 export default function Student(props) {
-    // const [id, setId] = useState() /*აიდის წამოღება*/
     const [showModal, setShowModal] = useState(false);
     const [updateModal, setUpdateModal] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
@@ -37,10 +36,11 @@ export default function Student(props) {
     const deleteStudent = async (id) =>{
         await axios.delete(`/students/${id}`)
         await getStudent();
-        /*აიდით წაშლა*/
     }
-
-
+    // const updateStudent = async (id) =>{
+    //     await axios.put(`/students/${id}`)
+    // }
+    // მონაცემის აბდეითი
     return (
 
         <div>
@@ -87,7 +87,6 @@ export default function Student(props) {
                                             <Button  style={{marginRight: 2.5}} onClick={()=>{setDeleteModal(false) ; deleteStudent(student.id).catch(console.error)}} >
                                                 Yes
                                             </Button>
-
                                             <Button  style={{marginLeft: 2.5}} onClick={()=> setDeleteModal(false)}>
                                                 No
                                             </Button>
