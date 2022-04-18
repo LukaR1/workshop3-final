@@ -2,21 +2,19 @@ import React, {useState} from "react";
 import {Button, ButtonToolbar, Form, Modal} from "react-bootstrap";
 
 
-export default function UpdateModal({showD, setShowD, id, handleUpdate}) {
+export default function UpdateModal({showD, setShowD, id, handleUpdate, student}) {
 
-    // const [student, setStudent] = useState([]);
     const [formValue, setFormValue] = useState({
         firstname: "",
         lastname: "",
-        personal_no: "",
+        personalNo: "",
         email: "",
-        birth_date: ""
+        birthDate: ""
     });
 
     return (
 
         <Modal show={showD} onHide={() => setShowD(false)}>
-
 
             <Modal.Header closeButton>
                 <Modal.Title>Update data </Modal.Title>
@@ -25,8 +23,6 @@ export default function UpdateModal({showD, setShowD, id, handleUpdate}) {
                 <div style={{display: "flex", alignItems: "center", justifyContent: "center"}}>
                 </div>
                 <Form>
-
-
                     <Form.Group className={"mt-3"}>
                         <Form.Label>First Name</Form.Label>
                         <Form.Control
@@ -49,8 +45,8 @@ export default function UpdateModal({showD, setShowD, id, handleUpdate}) {
                         <Form.Control
                             type="int"
                             placeholder="Enter Personal No"
-                            value={formValue.personal_no}
-                            onChange={event => setFormValue({...formValue, personal_no: event.target.value})}
+                            value={formValue.personalNo}
+                            onChange={event => setFormValue({...formValue, personalNo: event.target.value})}
                         />
                     </Form.Group>
                     <Form.Group className={"mt-3"}>
@@ -65,8 +61,8 @@ export default function UpdateModal({showD, setShowD, id, handleUpdate}) {
                         <Form.Label>Birth Date</Form.Label>
                         <Form.Control
                             placeholder="Enter Birth Date (yyyy-mm-dd)"
-                            value={formValue.birth_date}
-                            onChange={event => setFormValue({...formValue, birth_date: event.target.value})}
+                            value={formValue.birthDate}
+                            onChange={event => setFormValue({...formValue, birthDate: event.target.value})}
                         />
                     </Form.Group>
                 </Form>
@@ -75,7 +71,7 @@ export default function UpdateModal({showD, setShowD, id, handleUpdate}) {
 
                     <Button className="justify-content-end mt-3" style={{marginRight: 2.5}} onClick={() => {
                         setShowD(false)
-                        handleUpdate(id)
+                        handleUpdate(formValue, id)
                     }}>
                         Done
                     </Button>

@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {Button, ButtonToolbar, Form, Modal, Table} from "react-bootstrap";
+// import api from "../utils/api";
 import axios from "axios";
 import DeleteModal from './modals/DeleteModal';
 import UpdateModal from "./modals/UpdateModal";
@@ -14,9 +15,9 @@ export default function Student(props) {
     const [formValue, setFormValue] = useState({
         firstname: "",
         lastname: "",
-        personal_no: "",
+        personalNo: "",
         email: "",
-        birth_date: ""
+        birthDate: ""
     });
 
     const getStudent = async () => {
@@ -34,9 +35,9 @@ export default function Student(props) {
         await axios.post('/students', {
             firstname: formValue.firstname,
             lastname: formValue.lastname,
-            personalNo: formValue.personal_no,
+            personalNo: formValue.personalNo,
             email: formValue.email,
-            birthDate: formValue.birth_date
+            birthDate: formValue.birthDate
         });
         await getStudent();
     }
@@ -50,8 +51,10 @@ export default function Student(props) {
         })
     }
 
-    const updateStudent = (id) => {
-        axios.put(`/students/${id}`, {}).then(res => {
+    const updateStudent = (student, id) => {
+
+        const {firstname, lastname, personalNo, birthDate, email} = student;
+        axios.put(`/students/${id}`, {firstname, lastname, personalNo, email, birthDate}).then(res => {
             if (res.status === 200) {
                 getStudent()
             } else {
@@ -78,7 +81,7 @@ export default function Student(props) {
                     <th>Birth Date</th>
                 </tr>
                 </thead>
-                <tbody >
+                <tbody>
 
                 {
                     student.map((student) =>
@@ -107,6 +110,8 @@ export default function Student(props) {
                                 </Button>
 
                             </td>
+
+
                         </tr>
                     )}
 
@@ -145,8 +150,8 @@ export default function Student(props) {
                             <Form.Control
                                 type="int"
                                 placeholder="Enter Personal No"
-                                value={formValue.personal_no}
-                                onChange={event => setFormValue({...formValue, personal_no: event.target.value})}
+                                value={formValue.personalNo}
+                                onChange={event => setFormValue({...formValue, personalNo: event.target.value})}
                             />
                         </Form.Group>
                         <Form.Group className={"mt-3"}>
@@ -161,8 +166,8 @@ export default function Student(props) {
                             <Form.Label>Birth Date</Form.Label>
                             <Form.Control
                                 placeholder="Enter Birth Date (yyyy-mm-dd)"
-                                value={formValue.birth_date}
-                                onChange={event => setFormValue({...formValue, birth_date: event.target.value})}
+                                value={formValue.birthDate}
+                                onChange={event => setFormValue({...formValue, birthDate: event.target.value})}
                             />
                         </Form.Group>
                         <ButtonToolbar className="justify-content-end mt-3">
@@ -182,8 +187,9 @@ export default function Student(props) {
             }
 
             {
-                updateModal && id &&
-                <UpdateModal showD={updateModal} setShowD={setUpdateModal} id={id} handleUpdate={updateModal}/>
+                updateModal && student &&
+                <UpdateModal showD={updateModal} setShowD={setUpdateModal} id={id} student={student}
+                             handleUpdate={updateStudent}/>
             }
 
         </div>
