@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from "react";
 import {Button, ButtonToolbar, Form, Modal, Table} from "react-bootstrap";
-// import api from "../utils/api";
 import axios from "axios";
 import DeleteModal from './modals/DeleteModal';
+import UpdateModal from "./modals/UpdateModal";
 
 
 export default function Student(props) {
@@ -51,8 +51,8 @@ export default function Student(props) {
     }
 
     const updateStudent = (id) => {
-        axios.put(`/students/${id}`).then(res => {
-            if (res.status === 204) {
+        axios.put(`/students/${id}`, {}).then(res => {
+            if (res.status === 200) {
                 getStudent()
             } else {
                 throw "...."
@@ -183,7 +183,7 @@ export default function Student(props) {
 
             {
                 updateModal && id &&
-                <UpdateModal show={updateModal} setShow={setUpdateModal} id={id} handleDelete={updateModal}/>
+                <UpdateModal showD={updateModal} setShowD={setUpdateModal} id={id} handleUpdate={updateModal}/>
             }
 
         </div>
