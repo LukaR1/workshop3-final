@@ -6,7 +6,7 @@ import DeleteModal from './modals/DeleteModal';
 
 
 export default function Student(props) {
-    const [id, setId]= useState(null)
+    const [id, setId] = useState(null)
     const [showModal, setShowModal] = useState(false);
     const [updateModal, setUpdateModal] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
@@ -42,12 +42,22 @@ export default function Student(props) {
     }
     const deleteStudent = (id) => {
         axios.delete(`/students/${id}`).then(res => {
-             if (res.status === 204){
-                 getStudent()
-             }else {
-                 throw "...."
-             }
-        } )
+            if (res.status === 204) {
+                getStudent()
+            } else {
+                throw "...."
+            }
+        })
+    }
+
+    const updateStudent = (id) => {
+        axios.put(`/students/${id}`).then(res => {
+            if (res.status === 204) {
+                getStudent()
+            } else {
+                throw "...."
+            }
+        })
     }
 
     return (
@@ -68,7 +78,7 @@ export default function Student(props) {
                     <th>Birth Date</th>
                 </tr>
                 </thead>
-                <tbody style={{cursor: "pointer"}}>
+                <tbody >
 
                 {
                     student.map((student) =>
@@ -80,19 +90,15 @@ export default function Student(props) {
                             <td>{student.email}</td>
                             <td>{(student.birthDate) ? student.birthDate.slice(0, 10) : ""}</td>
                             <td>
-                                <Button className={"m-2"} variant="warning" onClick={() => {
+                                <Button style={{cursor: "pointer"}} className={"m-2"} variant="warning" onClick={() => {
                                     setUpdateModal(true)
                                     setId(student.id)
                                 }
                                 }>
                                     Update
                                 </Button>
-                                <Modal show={updateModal} onHide={() => setUpdateModal(false)}>
-                                    <Modal.Header closeButton>
-                                        <Modal.Title>Update Date</Modal.Title>
-                                    </Modal.Header>
-                                </Modal>
-                                <Button className={"m-2"} variant="danger" onClick={()=> {
+
+                                <Button style={{cursor: "pointer"}} className={"m-2"} variant="danger" onClick={() => {
                                     setDeleteModal(true)
                                     setId(student.id)
                                 }
@@ -118,7 +124,7 @@ export default function Student(props) {
                 <Modal.Body>
                     <Form onSubmit={addStudent}>
                         <Form.Group className={"mt-3"}>
-                            <Form.Label>FIRSTNAME</Form.Label>
+                            <Form.Label>First Name</Form.Label>
                             <Form.Control
                                 placeholder="Enter First Name"
                                 type="text"
@@ -127,7 +133,7 @@ export default function Student(props) {
                             />
                         </Form.Group>
                         <Form.Group className={"mt-3"}>
-                            <Form.Label>LASTNAME</Form.Label>
+                            <Form.Label>Last Name</Form.Label>
                             <Form.Control
                                 placeholder="Enter Last Name"
                                 value={formValue.lastname}
@@ -135,7 +141,7 @@ export default function Student(props) {
                             />
                         </Form.Group>
                         <Form.Group className={"mt-3"}>
-                            <Form.Label>PERSONAL NO</Form.Label>
+                            <Form.Label>Personal No</Form.Label>
                             <Form.Control
                                 type="int"
                                 placeholder="Enter Personal No"
@@ -144,7 +150,7 @@ export default function Student(props) {
                             />
                         </Form.Group>
                         <Form.Group className={"mt-3"}>
-                            <Form.Label>EMAIL</Form.Label>
+                            <Form.Label>Email</Form.Label>
                             <Form.Control
                                 placeholder="Enter Email"
                                 value={formValue.email}
@@ -152,7 +158,7 @@ export default function Student(props) {
                             />
                         </Form.Group>
                         <Form.Group className={"mt-3"}>
-                            <Form.Label>BIRTH DATE</Form.Label>
+                            <Form.Label>Birth Date</Form.Label>
                             <Form.Control
                                 placeholder="Enter Birth Date (yyyy-mm-dd)"
                                 value={formValue.birth_date}
@@ -171,7 +177,13 @@ export default function Student(props) {
 
 
             {
-                deleteModal && id && <DeleteModal show={deleteModal} setShow={setDeleteModal} id={id} handleDelete={deleteStudent}/>
+                deleteModal && id &&
+                <DeleteModal show={deleteModal} setShow={setDeleteModal} id={id} handleDelete={deleteStudent}/>
+            }
+
+            {
+                updateModal && id &&
+                <UpdateModal show={updateModal} setShow={setUpdateModal} id={id} handleDelete={updateModal}/>
             }
 
         </div>
