@@ -2,14 +2,15 @@ import React, {useEffect, useState} from "react";
 import {Button, ButtonToolbar, Form, Modal, Table} from "react-bootstrap";
 // import api from "../utils/api";
 import axios from "axios";
-
+import DeleteModal from './modals/DeleteModal';
 
 
 export default function Student(props) {
+    const [id, setId]= useState(null)
     const [showModal, setShowModal] = useState(false);
     const [updateModal, setUpdateModal] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
-    const [student, setStudent] = useState([])
+    const [student, setStudent] = useState([]);
     const [formValue, setFormValue] = useState({
         firstname: "",
         lastname: "",
@@ -30,28 +31,36 @@ export default function Student(props) {
 
     const addStudent = async (e) => {
         e.preventDefault();
-        await axios.post('/students', {firstname: formValue.firstname, lastname: formValue.lastname, personalNo: formValue.personal_no,email: formValue.email, birthDate: formValue.birth_date});
+        await axios.post('/students', {
+            firstname: formValue.firstname,
+            lastname: formValue.lastname,
+            personalNo: formValue.personal_no,
+            email: formValue.email,
+            birthDate: formValue.birth_date
+        });
         await getStudent();
     }
-    const deleteStudent = async (id) =>{
-        await axios.delete(`/students/${id}`)
-        await getStudent();
+    const deleteStudent = (id) => {
+        axios.delete(`/students/${id}`).then(res => {
+             if (res.status === 204){
+                 getStudent()
+             }else {
+                 throw "...."
+             }
+        } )
     }
-    // const updateStudent = async (id) =>{
-    //     await axios.put(`/students/${id}`)
-    // }
-    // მონაცემის აბდეითი
+
     return (
 
         <div>
 
-            <Table striped bordered hover >
+            <Table striped bordered hover>
 
                 <thead>
 
-                <tr className={'text-center'} >
+                <tr className={'text-center'}>
 
-                    <th >Id</th>
+                    <th>Id</th>
                     <th>First Name</th>
                     <th>Last Name</th>
                     <th>Personal No</th>
@@ -59,7 +68,7 @@ export default function Student(props) {
                     <th>Birth Date</th>
                 </tr>
                 </thead>
-                <tbody style={{cursor:"pointer"}}>
+                <tbody style={{cursor: "pointer"}}>
 
                 {
                     student.map((student) =>
@@ -69,33 +78,30 @@ export default function Student(props) {
                             <td>{student.lastname}</td>
                             <td>{student.personalNo}</td>
                             <td>{student.email}</td>
-                            <td>{(student.birthDate)?student.birthDate.slice(0,10):""}</td>
+                            <td>{(student.birthDate) ? student.birthDate.slice(0, 10) : ""}</td>
                             <td>
-                                <Button className={"m-2"} variant="warning" onClick={() => setUpdateModal(true)}>Update</Button>
-                                <Modal show={updateModal} onHide={()=> setUpdateModal(false)}>
+                                <Button className={"m-2"} variant="warning" onClick={() => {
+                                    setUpdateModal(true)
+                                    setId(student.id)
+                                }
+                                }>
+                                    Update
+                                </Button>
+                                <Modal show={updateModal} onHide={() => setUpdateModal(false)}>
                                     <Modal.Header closeButton>
                                         <Modal.Title>Update Date</Modal.Title>
                                     </Modal.Header>
                                 </Modal>
-                                <Button className={"m-2"} variant="danger" onClick={() => setDeleteModal(true) }>Delete</Button>
-                                <Modal show={deleteModal} onHide={()=> setDeleteModal(false)} >
-                                    <Modal.Header  closeButton >
-                                        <Modal.Title>Are you sure ?</Modal.Title>
-                                    </Modal.Header>
-                                    <Modal.Body>
-                                        <div style={{display: "flex", alignItems: "center", justifyContent: "center" }} >
-                                            <Button  style={{marginRight: 2.5}} onClick={()=>{setDeleteModal(false) ; deleteStudent(student.id).catch(console.error)}} >
-                                                Yes
-                                            </Button>
-                                            <Button  style={{marginLeft: 2.5}} onClick={()=> setDeleteModal(false)}>
-                                                No
-                                            </Button>
-                                        </div>
-                                    </Modal.Body>
-                                </Modal>
+                                <Button className={"m-2"} variant="danger" onClick={()=> {
+                                    setDeleteModal(true)
+                                    setId(student.id)
+                                }
+                                }>
+                                    Delete
+                                </Button>
+
                             </td>
                         </tr>
-
                     )}
 
                 </tbody>
@@ -154,7 +160,7 @@ export default function Student(props) {
                             />
                         </Form.Group>
                         <ButtonToolbar className="justify-content-end mt-3">
-                            <Button type="submit" onClick={()=>setShowModal(false)} >
+                            <Button type="submit" onClick={() => setShowModal(false)}>
                                 Add data
                             </Button>
                         </ButtonToolbar>
@@ -162,6 +168,11 @@ export default function Student(props) {
                 </Modal.Body>
 
             </Modal>
+
+
+            {
+                deleteModal && id && <DeleteModal show={deleteModal} setShow={setDeleteModal} id={id} handleDelete={deleteStudent}/>
+            }
 
         </div>
     );
