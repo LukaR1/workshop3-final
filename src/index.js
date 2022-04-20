@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import Home from "./components/Home";
-import Student from "./components/Student";
+import Student from "./components/students/Student";
 import {Alert} from "react-bootstrap";
 
 ReactDOM.render(

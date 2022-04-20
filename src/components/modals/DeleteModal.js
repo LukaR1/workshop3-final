@@ -12,7 +12,6 @@ export default function DeleteModal({show, setShow, id, handleDelete}){
             <Modal.Body>
                 <div style={{display: "flex", alignItems: "center", justifyContent: "center"}}>
                     <Button style={{marginRight: 2.5}} onClick={() => {
-                        setShow(false)
                         handleDelete(id)
                     }}>
                         Yes
