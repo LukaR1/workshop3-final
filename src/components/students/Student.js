@@ -27,7 +27,7 @@ export default function Student(props) {
         console.log("item")
 
     }
-    console.log("fghjk",student)
+    // console.log("fghjk",student)
     useEffect(() => {
         getStudent().catch(console.error)
     }, [])
